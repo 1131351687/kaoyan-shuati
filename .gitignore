@@ -3,10 +3,14 @@ data/*.db
 data/*.db-journal
 data/*.db-wal
 data/*.db-shm
-data/images/
-data/mock/
 data/_ocr_todo.json
 app/index.json
+
+# 数据目录本身要保留（.gitkeep 占位），只忽略里面的内容
+data/images/*
+data/mock/*
+!data/images/.gitkeep
+!data/mock/.gitkeep
 
 # ---- 外部资料源（自备考研资料放这里，不要提交） ----
 _study/
@@ -40,7 +44,3 @@ tmp/
 _out/
 _backup_*/
 _dist/
-
-# ��Ŀ¼ռλ��git �����ٿ�Ŀ¼��
-!.gitkeep
-

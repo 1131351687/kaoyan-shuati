@@ -11,7 +11,7 @@ const PORT = Number(process.env.CDP_PORT || 9470);
 const PAGE = process.env.BANK_URL || 'http://127.0.0.1:8891/';
 const CHROME = process.env.ZTQ_CHROME ||
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const PROJ = process.env.SKEL_DIR || 'D:\\try\\考研刷题-骨架';
+const PROJ = process.env.SKEL_DIR || 'D:\\try\\刷题框架';
 
 const UD = path.join(os.tmpdir(), 'udt_skel_' + Date.now());
 

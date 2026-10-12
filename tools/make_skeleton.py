@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 r"""make_skeleton.py —— 从现有题库副本，抽出一个「干净框架版」。
 
-产出 D:\try\考研刷题-骨架\：
-  ✅ 保留：全部代码（app/ tools/ capture/）、KaTeX、README 模板、
-           空数据库（只有表结构）、空的 index.json（只有骨架字段）
+产出 D:\try\刷题框架\：
+  ✅ 保留：全部代码（app/ tools/）、KaTeX、README、
+           空数据库（只有表结构）、空的 index.json（只有框架字段）
   ❌ 剔除：题图、题目、答案、学习记录、题目标签、抓包样本、
            一切已导入的资料与抓取证据
 
 用法：
-    python tools/make_skeleton.py                 # 默认目标 D:\try\考研刷题-骨架
+    python tools/make_skeleton.py                 # 默认目标 D:\try\刷题框架
     python tools/make_skeleton.py --dest D:\x     # 指定目标
     python tools/make_skeleton.py --with-capture  # 连 capture/ 抓包证据一起保留
 """
@@ -94,7 +94,7 @@ def copytree_filtered(src, dst):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dest", default=r"D:\try\考研刷题-骨架")
+    ap.add_argument("--dest", default=r"D:\try\刷题框架")
     ap.add_argument("--with-capture", action="store_true",
                     help="保留 capture/ 抓包证据（默认不保留）")
     ap.add_argument("--force", action="store_true", help="目标已存在时先删除")

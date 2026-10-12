@@ -56,9 +56,46 @@ def migrate(c):
     c.commit()
 
 
+def _ensure_schema(c):
+    """空库 / 首次运行时建表（幂等）。让框架在没有预置 .db 时也能直接跑。"""
+    c.executescript("""
+    CREATE TABLE IF NOT EXISTS question(
+      id TEXT PRIMARY KEY, group_id TEXT, group_name TEXT,
+      year TEXT, paper_name TEXT, paper_id INTEGER, number TEXT,
+      qtype INT, qtype_name TEXT, score INT,
+      answer TEXT, gradeable INT, answer_letters TEXT,
+      kp_name TEXT, kp_id INTEGER, kp_lv1 TEXT, kp_lv2 TEXT,
+      img_local TEXT, img_url TEXT,
+      diff_n INT, happy INT, maybe INT, sad INT,
+      mastery REAL, easy_ratio REAL,
+      answer_src TEXT DEFAULT 'site', answer_note TEXT DEFAULT '',
+      paper_set TEXT DEFAULT '', stem TEXT DEFAULT '');
+    CREATE TABLE IF NOT EXISTS record(id INTEGER PRIMARY KEY AUTOINCREMENT,
+      qid TEXT, ts REAL, action TEXT, value TEXT, ok INT, note TEXT,
+      elapsed REAL, last_wrong REAL);
+    CREATE INDEX IF NOT EXISTS ix_rec_qid ON record(qid);
+    CREATE INDEX IF NOT EXISTS ix_rec_ts ON record(ts);
+    CREATE TABLE IF NOT EXISTS srs(qid TEXT PRIMARY KEY, seen INT DEFAULT 0,
+      right_cnt INT DEFAULT 0, wrong_cnt INT DEFAULT 0, streak INT DEFAULT 0,
+      ease REAL DEFAULT 2.5, last_ts REAL, due REAL);
+    CREATE TABLE IF NOT EXISTS kp(kp_id INTEGER, kp_name TEXT,
+      parent_id INTEGER, level INTEGER, sort INTEGER);
+    CREATE TABLE IF NOT EXISTS paper(paper_id INTEGER, group_id INTEGER,
+      year TEXT, name TEXT, question_cnt INTEGER);
+    CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
+    CREATE INDEX IF NOT EXISTS ix_q_group ON question(group_id, year);
+    CREATE INDEX IF NOT EXISTS ix_q_kp ON question(kp_name);
+    CREATE INDEX IF NOT EXISTS ix_q_ans ON question(gradeable);
+    """)
+    c.commit()
+
+
 def conn():
+    # data/ 目录可能不存在（例如从 git 克隆后，数据目录是空的）
+    os.makedirs(os.path.dirname(DB), exist_ok=True)
     c = sqlite3.connect(DB)
     c.row_factory = sqlite3.Row
+    _ensure_schema(c)
     migrate(c)
     return c
 
